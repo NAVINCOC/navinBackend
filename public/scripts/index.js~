@@ -1,0 +1,8 @@
+//script/index.js
+var request = require('request');
+
+module.exports = {
+  register: function(req, res) {
+    console.log(req);
+  }
+};
