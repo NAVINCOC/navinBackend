@@ -8,11 +8,26 @@ function login(req, res) {
   	 });
 }
 
+function EmailCheck(req, res) {
+	db.emailCheck(req.body, function(err, result) {
+  	 	console.log(result);
+  	 	res.status(200).send(req.body);
+  	 });
+}
+
 function register(req, res) {
 	
 	 db.emailCheck(req.body, function(err, result) {
   	 	console.log(result);
-  	 	res.status(200).send(result);
+  	 	if(err)
+  	 	{
+			console.log("register error",err);
+		}
+		else
+		{
+			res.status(200).send(result);
+		}
+  	 	
   	 });
    /* console.log("register".info,req.body);
     res.status(200).send(req.body);*/
@@ -29,7 +44,10 @@ module.exports = {
 	}
 	else if(url[2] === 'register') {
 		console.log("register");
-	
+		register(req,res);
+	}
+	else if(url[2] === 'emailCheck') {
+		console.log("register");
 		register(req,res);
 	}
   }

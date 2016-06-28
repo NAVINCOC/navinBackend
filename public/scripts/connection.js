@@ -3,7 +3,7 @@ var connection = mysql.createPool({
       host: '192.168.1.56',
   user: 'polestarportal',
   password: 'root',
-  database: 'login_test',
+  database: 'ReviewSystem',
   connectionTimeout:60000
 });
 
