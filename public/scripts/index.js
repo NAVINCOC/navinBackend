@@ -2,16 +2,22 @@
 var db= require('./db');
 
 function login(req, res) {
-  	 db.emailCheck(req.body, function(err, result) {
+  	 db.login(req.body, function(err, result) {
   	 	console.log(result);
   	 	res.status(200).send(req.body);
   	 });
 }
 
-function EmailCheck(req, res) {
+function emailCheck(req, res) {
 	db.emailCheck(req.body, function(err, result) {
-  	 	console.log(result);
-  	 	res.status(200).send(req.body);
+  	 	console.log("check query response",result);
+  	 	if(err) {
+			res.status(400).send("connection failed");
+		} else if(result.length === 0) {
+			res.status(200).send('NO');
+		} else if(result.length > 0) {
+			res.status(200).send('YES');
+		}
   	 });
 }
 
@@ -48,7 +54,7 @@ module.exports = {
 	}
 	else if(url[2] === 'emailCheck') {
 		console.log("register");
-		register(req,res);
+		emailCheck(req,res);
 	}
   }
 };
