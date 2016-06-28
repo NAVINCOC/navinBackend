@@ -1,13 +1,21 @@
 //script/index.js
+var db= require('./db');
 
 function login(req, res) {
-  	 console.log("login"+req.body);
-     res.status(200).send(req.body);
+  	 db.emailCheck(req.body, function(err, result) {
+  	 	console.log(result);
+  	 	res.status(200).send(req.body);
+  	 });
 }
 
 function register(req, res) {
-    console.log("register"+req.body);
-    res.status(200).send(req.body);
+	
+	 db.emailCheck(req.body, function(err, result) {
+  	 	console.log(result);
+  	 	res.status(200).send(result);
+  	 });
+   /* console.log("register".info,req.body);
+    res.status(200).send(req.body);*/
 }
 
 module.exports = {
@@ -21,6 +29,7 @@ module.exports = {
 	}
 	else if(url[2] === 'register') {
 		console.log("register");
+	
 		register(req,res);
 	}
   }
