@@ -4,7 +4,7 @@ var db= require('./db');
 function login(req, res) {
   	 db.login(req.body, function(err, result) {
   	 	console.log(result);
-  	 	res.status(200).send(req.body);
+  	 	res.status(200).send(result);
   	 });
 }
 
