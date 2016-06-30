@@ -30,8 +30,6 @@ app.use(bodyParser.json());
 
 console.log('server listening at 127.0.0.1 over port 2318'.info);
 app.use(cookieParser());
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 router(app);
