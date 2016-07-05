@@ -5,7 +5,6 @@ var bodyParser = require('body-parser');
 var router = require('./router');
 var colors = require('colors');
 
-
 colors.setTheme({
   silly: 'rainbow',
   input: 'grey',
@@ -26,7 +25,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-
 
 console.log('server listening at 127.0.0.1 over port 2318'.info);
 app.use(cookieParser());

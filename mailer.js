@@ -4,14 +4,14 @@ var mailer = require("nodemailer");
 
 console.log('server listening at 127.0.0.1 over port 2318');
 
-    // Use Smtp Protocol to send Email
-    var smtpTransport = mailer.createTransport("SMTP",{
-        service: "Gmail",
-        auth: {
-            user: "",
-            pass: ""
-        }
-    });
+// Use Smtp Protocol to send Email
+var smtpTransport = mailer.createTransport("SMTP",{
+    service: "Gmail",
+    auth: {
+        user: "",
+        pass: ""
+    }
+});
 
 app.set('views', __dirname + '/');
 app.set('view engine', 'ejs');

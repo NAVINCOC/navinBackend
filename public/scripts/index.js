@@ -1,5 +1,6 @@
 //script/index.js
-var db= require('./db');
+var db = require('./db');
+var mailer= require('./mailer');
 
 function login(req, res) {
   	 db.login(req.body, function(err, result) {
@@ -23,15 +24,33 @@ function emailCheck(req, res) {
 
 function register(req, res) {
 	
-	 db.emailCheck(req.body, function(err, result) {
-  	 	console.log(result);
-  	 	if(err)
-  	 	{
-			console.log("register error",err);
-		}
-		else
-		{
-			res.status(200).send(result);
+	 db.register(req.body, function(err, result) {
+  	 	console.log("register reponse",result);
+  	 	if(err) {
+			res.status(400).send("connection failed");
+		} else {
+			    console.log("new",result);
+				db.login({loginEmail: req.body.emailR,loginPassword: req.body.passwordR}, function(err, result) {
+					console.log(result);
+					var data= req.body;
+					var mailOptions = {
+										to: data.emailR,
+										subject: "Registration Details",
+										//text: "Node.js New world for me",
+										html: "Hi,<br/>You are registered with our website.<br/>Your Email-ID and password are:<br/>Email-ID : "+data.emailR+"<br/>Password : "+data.passwordR+"<br/>"
+						
+					};
+					mailer.mailSend (mailOptions, function (error,res){
+						if(error) {
+							console.log(error);
+						} else {
+							console.log(res);
+						}
+					mailer.mailClose ();
+					});
+					res.status(200).send(result);
+				});
+			//res.status(200).send('YES');
 		}
   	 	
   	 });
