@@ -22,6 +22,39 @@ function emailCheck(req, res) {
   	 });
 }
 
+function forgetEmail(req, res) {
+	db.forgetEmail(req.body, function(err, result) {
+  	 	console.log("check query response",result);
+  	 	if(err) {
+			res.status(400).send("connection failed");
+		} else if(result.length === 0) {
+			res.status(200).send('NO');
+		} else if(result.length > 0) {
+			//mail Function
+			
+				var data= result[0];
+							var mailOptions = {
+										to: data.emailId,
+										subject: "Registration Details",
+										//text: "Node.js New world for me",
+										html: "Hi "+data.name+",<br/>Your Email-ID and password are:<br/>Email-ID : "+data.emailId+"<br/>Password : "+data.t_password+"<br/>"
+						
+					};
+					mailer.mailSend (mailOptions, function (error,res){
+						if(error) {
+							console.log(error);
+						} else {
+							console.log(res);
+						}
+					mailer.mailClose ();
+					});
+			
+			//end mail function
+			res.status(200).send('YES');
+		}
+  	 });
+}
+
 function register(req, res) {
 	console.log("body",req.body);
 	if(req.body.registerEmail !== "" && req.body.registerEmail!==undefined && req.body.registerEmail!==null && req.body.registerPassword!=="" && req.body.registerPassword!==undefined && req.body.registerPassword!==null)
@@ -81,6 +114,9 @@ module.exports = {
 	else if(url[2] === 'emailCheck') {
 		console.log("register");
 		emailCheck(req,res);
+	} else if(url[2] === 'forgetEmail') {
+		console.log("forgetEMail");
+		forgetEmail(req,res);
 	}
   }
 };
