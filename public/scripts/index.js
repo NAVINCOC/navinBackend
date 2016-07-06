@@ -55,11 +55,19 @@ function forgetEmail(req, res) {
   	 });
 }
 
+function otpGenerator()
+{
+	var otp = Math.floor(Math.random() * 900000) + 100000;
+	return otp;
+}
+
 function register(req, res) {
 	console.log("body",req.body);
 	if(req.body.registerEmail !== "" && req.body.registerEmail!==undefined && req.body.registerEmail!==null && req.body.registerPassword!=="" && req.body.registerPassword!==undefined && req.body.registerPassword!==null)
 	{
-		db.register(req.body, function(err, result) {
+		var body = req.body;
+		body.otp = otpGenerator();
+		db.register(body, function(err, result) {
   	 	console.log("register reponse",result);
   	 	if(err) {
 			res.status(400).send("connection failed");
@@ -72,7 +80,7 @@ function register(req, res) {
 										to: data.registerEmail,
 										subject: "Registration Details",
 										//text: "Node.js New world for me",
-										html: "Hi "+data.contactperson+",<br/>You are registered with our website.<br/>Your Email-ID and password are:<br/>Email-ID : "+data.registerEmail+"<br/>Password : "+data.registerPassword+"<br/>"
+										html: "Hi "+data.contactperson+",<br/>You are registered with our website.<br/>Your Email-ID and password are:<br/>Email-ID : "+data.registerEmail+"<br/>Password : "+data.registerPassword+"<br/><br/>Your OTP for email verification is : "+data.otp+""
 						
 					};
 					mailer.mailSend (mailOptions, function (error,res){
