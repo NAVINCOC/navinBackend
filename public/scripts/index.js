@@ -2,15 +2,6 @@
 var db = require('./db');
 var mailer = require('./mailer');
 
-var mailCallback = function (err, nfs) {
-  if(err) {
-    console.log(err);
-  } else {
-    console.log(nfs);
-  }
-  mailer.mailClose ();
-};
-
 var login = function (req, res) {
   db.login (req.body, function (err, result) {
     console.log(result);
@@ -47,7 +38,7 @@ var forgetEmail = function (req, res) {
         //text: "Node.js New world for me",
         html: "Hi "+data.name+",<br/>Your LogIn details are<br/>Email-ID: <strong>"+data.emailId+"</strong><br/>Password: <strong>"+data.t_password+"</strong><br/>"
       };
-      mailer.mailSend (mailOptions, mailCallback());
+      mailer.mailSend (mailOptions);
       //end mail function
       res.status(200).send('YES');
     }
@@ -82,7 +73,7 @@ var register = function (req, res) {
             //text: "Node.js New world for me",
             html: "Hi <strong>"+data.contactperson+"</strong>,<br/>You are registered with our website.<br/><strong>Your LogIn details are - </strong><br/>Email-ID : <strong>"+data.registerEmail+"</strong><br/>Password : <strong>"+data.registerPassword+"</strong><br/><br/>Your OTP for email verification is : <strong>"+data.otp+"</strong><br />Please use this OTP to login for first time."
           };
-          mailer.mailSend (mailOptions, mailCallback());
+          mailer.mailSend (mailOptions);
           res.status(200).send(result);
         });
         //res.status(200).send('YES');
@@ -107,7 +98,7 @@ var verifyOtp = function (req, res) {
         subject: 'Email Confirmed Successfully',
         html: 'Hello<br />Your Email is verified successfully.<br />We will notify you with with this email <strong>' + req.body.email +'</strong> for any future information<br /><br /><br /><br /><strong>Thanks Regards<br />Polestar Team</strong>'
       };
-      mailer.mailSend (mailOptions, mailCallback());
+      mailer.mailSend (mailOptions);
       res.status(200).send('YES');
     }
   });
@@ -116,7 +107,22 @@ var verifyOtp = function (req, res) {
 var resendOtp = function (req, res) {
   console.log('resendOtp  email '.debug, req.body);
   var newOtp = otpGenerator ();
-  
+ var body = req.body;
+body.otp = newOtp;
+    db.resendOtp (body, function (err, resOtp) {
+    if (err) {
+      console.log(err);
+      res.status(400).send('Connection Failed');
+    } else {
+      var mailOptions = {
+        to: req.body.email,
+        subject: 'OTP Request',
+        html: 'Hello<br/><br/>We have received your OTP request.<br />Your new OTP is: <strong>' + newOtp +'</strong><br /><br /><strong>Thanks Regards<br />Polestar Team</strong>'
+      };
+      mailer.mailSend (mailOptions);
+      res.status(200).send('YES');
+    }
+  });
 }
 
 module.exports = {

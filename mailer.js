@@ -8,8 +8,8 @@ console.log('server listening at 127.0.0.1 over port 2318');
 var smtpTransport = mailer.createTransport("SMTP",{
     service: "Gmail",
     auth: {
-        user: "",
-        pass: ""
+        user: "ashish.singla@polestarllp.com",
+        pass: "omshanti"
     }
 });
 

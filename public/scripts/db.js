@@ -19,7 +19,12 @@ module.exports=
     dbConnection (sql, cb);
   },
   verifyOtp: function (data, cb) {
-  	var sql = 'select * from t_userdetails where emailId="'+data.email+'" && otp="'+data.otp+'"';
+  	var sql = 'update t_userdetails set isValidated=1 where emailId="'+data.email+'" && otp="'+data.otp+'"';
+  	dbConnection (sql, cb);
+  },
+  resendOtp: function (data, cb) {
+  	var sql = 'update t_userdetails set otp="'+data.otp+'" where emailId="'+data.email+'"';
   	dbConnection (sql, cb);
   }
+  
 }
