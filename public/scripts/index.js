@@ -1,130 +1,145 @@
 //script/index.js
 var db = require('./db');
-var mailer= require('./mailer');
+var mailer = require('./mailer');
 
-function login(req, res) {
-  	 db.login(req.body, function(err, result) {
-  	 	console.log(result);
-  	 	res.status(200).send(result);
-  	 });
-}
+var mailCallback = function (err, nfs) {
+  if(err) {
+    console.log(err);
+  } else {
+    console.log(nfs);
+  }
+  mailer.mailClose ();
+};
 
-function emailCheck(req, res) {
-	db.emailCheck(req.body, function(err, result) {
-  	 	console.log("check query response",result);
-  	 	if(err) {
-			res.status(400).send("connection failed");
-		} else if(result.length === 0) {
-			res.status(200).send('NO');
-		} else if(result.length > 0) {
-			res.status(200).send('YES');
-		}
-  	 });
-}
+var login = function (req, res) {
+  db.login (req.body, function (err, result) {
+    console.log(result);
+    res.status(200).send(result);
+  });
+};
 
-function forgetEmail(req, res) {
-	db.forgetEmail(req.body, function(err, result) {
-  	 	console.log("check query response",result);
-  	 	if(err) {
-			res.status(400).send("connection failed");
-		} else if(result.length === 0) {
-			res.status(200).send('NO');
-		} else if(result.length > 0) {
-			//mail Function
-			
-				var data= result[0];
-							var mailOptions = {
-										to: data.emailId,
-										subject: "Registration Details",
-										//text: "Node.js New world for me",
-										html: "Hi "+data.name+",<br/>Your Email-ID and password are:<br/>Email-ID : "+data.emailId+"<br/>Password : "+data.t_password+"<br/>"
-						
-					};
-					mailer.mailSend (mailOptions, function (error,res){
-						if(error) {
-							console.log(error);
-						} else {
-							console.log(res);
-						}
-					mailer.mailClose ();
-					});
-			
-			//end mail function
-			res.status(200).send('YES');
-		}
-  	 });
-}
+var emailCheck = function (req, res) {
+  db.emailCheck (req.body, function (err, result) {
+    console.log("check query response",result);
+    if (err) {
+      res.status(400).send("connection failed");
+    } else if (result.length === 0) {
+      res.status(200).send('NO');
+    } else if (result.length > 0) {
+      res.status(200).send('YES');
+    }
+  });
+};
 
-function otpGenerator()
-{
-	var otp = Math.floor(Math.random() * 900000) + 100000;
-	return otp;
-}
+var forgetEmail = function (req, res) {
+  db.forgetEmail (req.body, function (err, result) {
+    console.log("check query response",result);
+    if (err) {
+      res.status(400).send("connection failed");
+    } else if (result.length === 0) {
+      res.status(200).send('NO');
+    } else if (result.length > 0) {
+      //mail Function
+      var data= result[0];
+      var mailOptions = {
+        to: data.emailId,
+        subject: "Forget Password",
+        //text: "Node.js New world for me",
+        html: "Hi "+data.name+",<br/>Your LogIn details are<br/>Email-ID: <strong>"+data.emailId+"</strong><br/>Password: <strong>"+data.t_password+"</strong><br/>"
+      };
+      mailer.mailSend (mailOptions, mailCallback());
+      //end mail function
+      res.status(200).send('YES');
+    }
+  });
+};
 
-function register(req, res) {
-	console.log("body",req.body);
-	if(req.body.registerEmail !== "" && req.body.registerEmail!==undefined && req.body.registerEmail!==null && req.body.registerPassword!=="" && req.body.registerPassword!==undefined && req.body.registerPassword!==null)
-	{
-		var body = req.body;
-		body.otp = otpGenerator();
-		db.register(body, function(err, result) {
-  	 	console.log("register reponse",result);
-  	 	if(err) {
-			res.status(400).send("connection failed");
-		} else {
-			    console.log("new",result);
-				db.login({loginEmail: req.body.registerEmail,loginPassword: req.body.registerPassword}, function(err, result) {
-					console.log(result);
-					var data= req.body;
-					var mailOptions = {
-										to: data.registerEmail,
-										subject: "Registration Details",
-										//text: "Node.js New world for me",
-										html: "Hi "+data.contactperson+",<br/>You are registered with our website.<br/>Your Email-ID and password are:<br/>Email-ID : "+data.registerEmail+"<br/>Password : "+data.registerPassword+"<br/><br/>Your OTP for email verification is : "+data.otp+""
-						
-					};
-					mailer.mailSend (mailOptions, function (error,res){
-						if(error) {
-							console.log(error);
-						} else {
-							console.log(res);
-						}
-					mailer.mailClose ();
-					});
-					res.status(200).send(result);
-				});
-			//res.status(200).send('YES');
-		}
-  	 	
-  	 });
-	} else {
-		res.status(400).send("connection failed or invalid input");
-	}
-	
-	 
-   /* console.log("register".info,req.body);
+var otpGenerator = function () {
+  var otp = Math.floor(Math.random() * 900000) + 100000;
+  return otp;
+};
+
+var register = function (req, res) {
+  console.log("body",req.body);
+  if( req.body.registerEmail !== '' && req.body.registerEmail !== undefined && req.body.registerEmail !== null && req.body.registerPassword !== '' && req.body.registerPassword !== undefined && req.body.registerPassword !== null ) {
+    var body = req.body;
+    body.otp = otpGenerator ();
+    db.register (body, function (err, result) {
+      console.log("register reponse",result);
+      if (err) {
+        res.status(400).send("connection failed");
+      } else {
+        console.log("new",result);
+        db.login ( {
+          loginEmail: req.body.registerEmail,
+          loginPassword: req.body.registerPassword
+        }, function (err, result) {
+          console.log(result);
+          var data = req.body;
+          var mailOptions = {
+            to: data.registerEmail,
+            subject: "Registration Successful",
+            //text: "Node.js New world for me",
+            html: "Hi <strong>"+data.contactperson+"</strong>,<br/>You are registered with our website.<br/><strong>Your LogIn details are - </strong><br/>Email-ID : <strong>"+data.registerEmail+"</strong><br/>Password : <strong>"+data.registerPassword+"</strong><br/><br/>Your OTP for email verification is : <strong>"+data.otp+"</strong><br />Please use this OTP to login for first time."
+          };
+          mailer.mailSend (mailOptions, mailCallback());
+          res.status(200).send(result);
+        });
+        //res.status(200).send('YES');
+      }
+    });
+  } else {
+    res.status(400).send("connection failed or invalid input");
+  }
+  /* console.log("register".info,req.body);
     res.status(200).send(req.body);*/
+};
+
+var verifyOtp = function (req, res) {
+  console.log('verifyOtp  otp = '.debug, req.body);
+  db.verifyOtp (req.body, function (err, resOtp) {
+    if (err) {
+      console.log(err);
+      res.status(400).send('Connection Failed');
+    } else {
+      var mailOptions = {
+        to: req.body.email,
+        subject: 'Email Confirmed Successfully',
+        html: 'Hello<br />Your Email is verified successfully.<br />We will notify you with with this email <strong>' + req.body.email +'</strong> for any future information<br /><br /><br /><br /><strong>Thanks Regards<br />Polestar Team</strong>'
+      };
+      mailer.mailSend (mailOptions, mailCallback());
+      res.status(200).send('YES');
+    }
+  });
+};
+
+var resendOtp = function (req, res) {
+  console.log('resendOtp  email '.debug, req.body);
+  var newOtp = otpGenerator ();
+  
 }
 
 module.exports = {
-  index: function(req,res){
-  	
-  	var url=req.originalUrl.split('/');
+  index: function (req,res) {
+    var url = req.originalUrl.split('/');
     console.log(url);	
-    if(url[2] === 'login') {
-    	console.log("login");
-		login(req,res);
-	}
-	else if(url[2] === 'register') {
-		console.log("register");
-		register(req,res);
-	}
-	else if(url[2] === 'emailCheck') {
-		console.log("register");
-		emailCheck(req,res);
-	} else if(url[2] === 'forgetEmail') {
-		console.log("forgetEMail");
-		forgetEmail(req,res);
-	}
+    if (url[2] === 'login') {
+      login (req,res);
+    } else if (url[2] === 'register') {
+      console.log("script/index register");
+      register (req,res);
+    } else if (url[2] === 'emailCheck') {
+      console.log("script/index emailCheck");
+      emailCheck (req,res);
+    } else if (url[2] === 'forgetEmail') {
+      console.log("script/index forgetEMail");
+      forgetEmail (req,res);
+    } else if (url[2] === 'verifyOtp') {
+      console.log('script/index verifyOtp');
+      verifyOtp (req, res);
+    } else if (url[2] === 'resendOtp') {
+      console.log('script/index resendOtp');
+      resendOtp (req, res);
+    }
   }
 };
