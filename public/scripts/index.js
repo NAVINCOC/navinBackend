@@ -71,7 +71,7 @@ var register = function (req, res) {
             to: data.registerEmail,
             subject: "Registration Successful",
             //text: "Node.js New world for me",
-            html: "Hi <strong>"+data.contactperson+"</strong>,<br/>You are registered with our website.<br/><strong>Your LogIn details are - </strong><br/>Email-ID : <strong>"+data.registerEmail+"</strong><br/>Password : <strong>"+data.registerPassword+"</strong><br/><br/>Your OTP for email verification is : <strong>"+data.otp+"</strong><br />Please use this OTP to login for first time."
+            html: "Hi <strong>"+data.contactperson+"</strong>,<br/><br/>You are registered with our website.<br/><strong>Your LogIn details are - </strong><br/>Email-ID : <strong>"+data.registerEmail+"</strong><br/>Password : <strong>"+data.registerPassword+"</strong><br/><br/>Your OTP for email verification is : <strong>"+data.otp+"</strong><br />Please use this OTP to login for first time.<br /><br /><strong>Thanks Regards<br />Polestar Team</strong>"
           };
           mailer.mailSend (mailOptions);
           res.status(200).send(result);
@@ -96,7 +96,7 @@ var verifyOtp = function (req, res) {
       var mailOptions = {
         to: req.body.email,
         subject: 'Email Confirmed Successfully',
-        html: 'Hello<br />Your Email is verified successfully.<br />We will notify you with with this email <strong>' + req.body.email +'</strong> for any future information<br /><br /><br /><br /><strong>Thanks Regards<br />Polestar Team</strong>'
+        html: 'Hello<br /><br/>Your Email is verified successfully.<br />We will notify you with with this email <strong>' + req.body.email +'</strong> for any future information<br /><br /><strong>Thanks Regards<br />Polestar Team</strong>'
       };
       mailer.mailSend (mailOptions);
       res.status(200).send('YES');
