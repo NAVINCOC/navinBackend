@@ -107,9 +107,9 @@ var verifyOtp = function (req, res) {
 var resendOtp = function (req, res) {
   console.log('resendOtp  email '.debug, req.body);
   var newOtp = otpGenerator ();
- var body = req.body;
-body.otp = newOtp;
-    db.resendOtp (body, function (err, resOtp) {
+  var body = req.body;
+  body.otp = newOtp;
+  db.resendOtp (body, function (err, resOtp) {
     if (err) {
       console.log(err);
       res.status(400).send('Connection Failed');

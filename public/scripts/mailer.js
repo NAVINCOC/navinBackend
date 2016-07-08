@@ -11,8 +11,7 @@ var smtpTransport = mailer.createTransport("SMTP",{
 });
 
 module.exports = {
-  mailSend: function (mail, fn) {
-    console.log(fn);
+  mailSend: function (mail) {
     smtpTransport.sendMail(mail, function (err, nfs) {
       if(err) {
         console.log('mail error',err);
