@@ -29,5 +29,13 @@ module.exports=
   getQuestion: function (cb) {
     var sql = 'select * from t_questionAnswers';
     dbConnection (sql, cb);
+  },
+  saveReview: function (data, cb) {
+  	
+  	qa=JSON.stringify(data.qa);
+  	console.log("db",qa);
+    var sql="INSERT INTO t_reviewData(name, email, alternateEmail, phone, alternatePhone, primarySkills, secondarySkills, expyear, expMonth, qa) VALUES('"+data.reviewedName+"','"+data.reviewedEmail+"','"+data.reviewedAlternateEmail+"','"+data.reviewedPhone+"','"+data.reviewedAlternateNumber+"','"+data.reviewedPrimarySkills+"','"+data.reviewedSecondarySkills+"','"+data.reviewedYear+"','"+data.reviewedMonth+"','"+qa+"')";
+    dbConnection (sql, cb);
   }
+  
 }

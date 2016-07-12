@@ -137,6 +137,18 @@ var getQuestion = function (req, res) {
   })
 }
 
+var review = function (req, res) {//console.log(req.body);
+	db.saveReview (req.body, function (err, result) { console.log(result,'result');
+	if (err) {
+      res.status(400).send('Connection Failed');
+    } else if (result.length === 0) {
+      res.status(404).send('NO DATA');
+    } else if (result.length > 0) {
+      res.status(200).send('Data successfully inserted');
+    }
+	})
+}
+
 module.exports = {
   index: function (req,res) {
     var url = req.originalUrl.split('/');
@@ -161,6 +173,9 @@ module.exports = {
     } else if (url[2] === 'getQuestion') {
       console.log('script/index getQuestion');
       getQuestion (req, res);
+    } else if (url[2] === 'review') {
+      console.log('script/index review');
+      review (req, res);
     }
   }
 };
