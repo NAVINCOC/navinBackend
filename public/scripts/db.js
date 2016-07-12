@@ -25,5 +25,9 @@ module.exports=
   resendOtp: function (data, cb) {
     var sql = 'update t_userdetails set otp="'+data.otp+'" where emailId="'+data.email+'"';
     dbConnection (sql, cb);
+  },
+  getQuestion: function (cb) {
+    var sql = 'select * from t_questionAnswers';
+    dbConnection (sql, cb);
   }
 }

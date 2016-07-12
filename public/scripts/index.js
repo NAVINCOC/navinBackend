@@ -125,6 +125,18 @@ var resendOtp = function (req, res) {
   });
 }
 
+var getQuestion = function (req, res) {
+  db.getQuestion (function (err, result) {
+    if (err) {
+      res.status(400).send('Connection Failed');
+    } else if (result.length === 0) {
+      res.status(404).send('NO DATA');
+    } else if (result.length > 0) {
+      res.status(200).send(result);
+    }
+  })
+}
+
 module.exports = {
   index: function (req,res) {
     var url = req.originalUrl.split('/');
@@ -146,6 +158,9 @@ module.exports = {
     } else if (url[2] === 'resendOtp') {
       console.log('script/index resendOtp');
       resendOtp (req, res);
+    } else if (url[2] === 'getQuestion') {
+      console.log('script/index getQuestion');
+      getQuestion (req, res);
     }
   }
 };
