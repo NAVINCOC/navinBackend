@@ -27,7 +27,7 @@ module.exports=
     dbConnection (sql, cb);
   },
   getQuestion: function (cb) {
-    var sql = 'select * from t_questionAnswers';
+    var sql = 'select * from t_questionAnswers WHERE isActive = 1';
     dbConnection (sql, cb);
   },
   saveReview: function (data, cb) {
