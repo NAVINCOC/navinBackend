@@ -134,21 +134,21 @@ var getQuestion = function (req, res) {
     } else if (result.length > 0) {
       res.status(200).send(result);
     }
-  })
+  });
 }
 
 var review = function (req, res) {//console.log(req.body);
-	db.saveReview (req.body, function (err, result) { console.log(result,'result');
-	if (err) {
+  db.saveReview (req.body, function (err, result) { console.log(result,'result');
+  if (err) {
       res.status(400).send('Connection Failed');
     } else {
       res.status(200).send('Data successfully inserted');
     }
-	})
+  });
 }
 
-var showReview = function (req, res) {
-  db.showReview (function (err, result) {
+var getReview = function (req, res) {
+  db.getReview (function (err, result) {
     if (err) {
       res.status(400).send('Connection Failed');
     } else if (result.length === 0) {
@@ -156,7 +156,7 @@ var showReview = function (req, res) {
     } else if (result.length > 0) {
       res.status(200).send(result);
     }
-  })
+  });
 }
 
 module.exports = {
@@ -186,9 +186,9 @@ module.exports = {
     } else if (url[2] === 'review') {
       console.log('script/index review');
       review (req, res);
-    } else if (url[2] === 'showReview') {
-      console.log('show review');
-      review (req, res);
+    } else if (url[2] === 'getReview') {
+      console.log('get review');
+      getReview (req, res);
     }
   }
 };

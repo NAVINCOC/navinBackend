@@ -36,7 +36,7 @@ module.exports=
     var sql="INSERT INTO t_reviewData(name, email, alternateEmail, phone, alternatePhone, primarySkills, secondarySkills, expyear, expMonth, qa) VALUES('"+data.reviewedName+"','"+data.reviewedEmail+"','"+data.reviewedAlternateEmail+"','"+data.reviewedPhone+"','"+data.reviewedAlternateNumber+"','"+data.reviewedPrimarySkills+"','"+data.reviewedSecondarySkills+"','"+data.reviewedYear+"','"+data.reviewedMonth+"','"+qa+"')";
     dbConnection (sql, cb);
   },
-   showReview: function (cb) {
+  getReview: function (cb) {
     var sql = 'select * from t_reviewData';
     dbConnection (sql, cb);
   }
