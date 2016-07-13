@@ -147,6 +147,18 @@ var review = function (req, res) {//console.log(req.body);
 	})
 }
 
+var showReview = function (req, res) {
+  db.showReview (function (err, result) {
+    if (err) {
+      res.status(400).send('Connection Failed');
+    } else if (result.length === 0) {
+      res.status(404).send('NO DATA');
+    } else if (result.length > 0) {
+      res.status(200).send(result);
+    }
+  })
+}
+
 module.exports = {
   index: function (req,res) {
     var url = req.originalUrl.split('/');
@@ -173,6 +185,9 @@ module.exports = {
       getQuestion (req, res);
     } else if (url[2] === 'review') {
       console.log('script/index review');
+      review (req, res);
+    } else if (url[2] === 'showReview') {
+      console.log('show review');
       review (req, res);
     }
   }
