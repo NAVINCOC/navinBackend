@@ -5,6 +5,7 @@ var mailer = require('./mailer');
 var login = function (req, res) {
   db.login (req.body, function (err, result) {
     console.log(result);
+    result= result[0];
     res.status(200).send(result);
   });
 };
@@ -12,6 +13,8 @@ var login = function (req, res) {
 var emailCheck = function (req, res) {
   db.emailCheck (req.body, function (err, result) {
     console.log("check query response",result);
+    console.log("result length =",result[0].length);
+    result= result[0];
     if (err) {
       res.status(400).send("connection failed");
     } else if (result.length === 0) {
@@ -25,6 +28,7 @@ var emailCheck = function (req, res) {
 var forgetEmail = function (req, res) {
   db.forgetEmail (req.body, function (err, result) {
     console.log("check query response",result);
+    result= result[0];
     if (err) {
       res.status(400).send("connection failed");
     } else if (result.length === 0) {
@@ -65,6 +69,7 @@ var forgetPassword = function (req, res) {
   body.randomPassword = randomPassword ();
   db.forgetPassword (body, function (err, result) {
     console.log("check query response",result);
+    result = result[0];
     if (err) {
       res.status(400).send("connection failed");
     } else {
@@ -90,6 +95,7 @@ var register = function (req, res) {
     body.otp = otpGenerator ();
     db.register (body, function (err, result) {
       console.log("register reponse",result);
+      result= result[0];
       if (err) {
         res.status(400).send("connection failed");
       } else {
@@ -160,6 +166,7 @@ var resendOtp = function (req, res) {
 
 var getQuestion = function (req, res) {
   db.getQuestion (function (err, result) {
+  	result= result[0];
     if (err) {
       res.status(400).send('Connection Failed');
     } else if (result.length === 0) {
@@ -170,8 +177,16 @@ var getQuestion = function (req, res) {
   });
 }
 
-var review = function (req, res) {//console.log(req.body);
-  db.saveReview (req.body, function (err, result) { console.log(result.insertId,'result');
+var review = function (req, res) {
+	console.log("response:",req.body);
+	console.log("qa:-",req.body.qa);
+	db.saveReview (req.body, function (err, result) { console.log("review data-",result);
+		if(err) {
+			res.status(400).send('Connection Failed');
+		}
+	})
+	
+  /*db.saveReview (req.body, function (err, result) { console.log(result.insertId,'result');
   if (err) {
       res.status(400).send('Connection Failed');
     } else {
@@ -212,9 +227,9 @@ var review = function (req, res) {//console.log(req.body);
 	   			}	
 			 });
         }*/
-      res.status(200).send('Data successfully inserted');
+  /*    res.status(200).send('Data successfully inserted');
     }
-  });
+  });*/
 }
 
 var getReview = function (req, res) {

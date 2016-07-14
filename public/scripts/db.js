@@ -1,53 +1,94 @@
-var dbConnection = require('./connection');
+var dbConnection = require('./connection').executeQuery;
 
 module.exports=
 {
   emailCheck: function(data, cb) {
-    var sql="select isValidated from t_userdetails where emailId='"+data.email+"'";
-    dbConnection (sql, cb);
-  },
-  login: function(data, cb){
-    var sql="select * from t_userdetails where emailId='"+data.loginEmail+"' && t_password='"+data.loginPassword+"'";
-    dbConnection (sql, cb);
+  	var query = {
+			sql: 'call emailCheck(?)',
+			values: [data.email]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
+    },
+    login: function(data, cb){
+    	var query = {
+			sql: 'call login(?,?)',
+			values: [data.loginEmail,data.loginPassword]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
   },
   register: function (data, cb) {
-    var sql="INSERT INTO t_userdetails(emailId, t_password, name, contactNo, country, state, city, pinCode, address1, address2, address3, company, conpanyType, industryType, otp) VALUES('"+data.registerEmail+"','"+data.registerPassword+"','"+data.contactperson+"','"+data.contactno+"','"+data.country+"','"+data.state+"','"+data.city+"','"+data.pincode+"','"+data.address1+"','"+data.address2+"','"+data.address3+"','"+data.company+"','"+data.companyType+"','"+data.industryType+"', '"+data.otp+"')";
-    dbConnection (sql, cb);
+  	var query = {
+			sql: 'call register(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+			values: [data.registerEmail,data.registerPassword,data.contactperson,data.contactno,data.country,data.state,data.city,data.pincode,data.address1,data.address2,data.address3,data.company,data.companyType,data.industryType,data.otp]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
   },
   forgetEmail: function(data, cb) {
-    var sql="select * from t_userdetails where emailId='"+data.email+"'";
-    dbConnection (sql, cb);
+  	var query = {
+			sql: 'call forgetEmail(?)',
+			values: [data.email]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
   },
-  forgetPassword: function (data, cb) {
-  	var sql= "update t_userdetails set t_password='"+data.randomPassword+"' where emailId='"+data.email+"'";
-  	dbConnection (sql, cb);
+   forgetPassword: function (data, cb) {
+   	var query = {
+			sql: 'call forgetPassword(?,?)',
+			values: [data.randomPassword,data.email]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
+   },
+  getQuestion: function (cb) {
+  		var query = {
+			sql: 'call getQuestion(?)',
+			values: [1]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
   },
-  verifyOtp: function (data, cb) {
-    var sql = 'update t_userdetails set isValidated=1 where emailId="'+data.email+'" && otp="'+data.otp+'"';
-    dbConnection (sql, cb);
+   verifyOtp: function (data, cb) {
+   	var query = {
+			sql: 'call verifyOtp(?,?)',
+			values: [data.email,data.otp]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
   },
   resendOtp: function (data, cb) {
-    var sql = 'update t_userdetails set otp="'+data.otp+'" where emailId="'+data.email+'"';
-    dbConnection (sql, cb);
-  },
-  getQuestion: function (cb) {
-    var sql = 'select * from t_questionAnswers WHERE isActive = 1';
-    dbConnection (sql, cb);
+  	var query = {
+			sql: 'call resendOtp(?,?)',
+			values: [data.otp,data.email]
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
   },
   saveReview: function (data, cb) {
   	qa=JSON.stringify(data.qa);
   	console.log("db",qa);
-
     var sql="INSERT INTO t_reviewData(name, email, alternateEmail, phone, alternatePhone, primarySkills, secondarySkills, expyear, expMonth) VALUES('"+data.reviewedName+"','"+data.reviewedEmail+"','"+data.reviewedAlternateEmail+"','"+data.reviewedPhone+"','"+data.reviewedAlternateNumber+"','"+data.reviewedPrimarySkills+"','"+data.reviewedSecondarySkills+"','"+data.reviewedYear+"','"+data.reviewedMonth+"')";
     dbConnection (sql, cb);
   },
-    saveReviewQuesAns: function (data, cb) {
-    var sql="INSERT INTO t_reviewQuesAns(qId, answer, reviewId) VALUES('"+data.qId+"','"+data.ans+"','"+data.reviewId+"')";
-    dbConnection (sql, cb);
-  },
   getReview: function (cb) {
-    var sql = 'select * from t_reviewData';
-    dbConnection (sql, cb);
-  }
-  
+  	var query = {
+			sql: 'call getReview()',
+			values: []
+		};
+		dbConnection(query, function(err, result) {
+			cb(err, result);
+		});
+   }
 }
+
+

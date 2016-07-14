@@ -1,15 +1,30 @@
 var mysql = require('mysql');
-var connection = mysql.createPool({
-      host: '192.168.1.56',
-  user: 'polestarportal',
-  password: 'root',
-  database: 'ReviewSystem',
+var config = require('./config').mysqlconfig;
+
+var pool = mysql.createPool({
+  host: config.host,
+  user: config.user,
+  password : config.password,
+  port : config.port,
+  database: config.database,
   connectionTimeout:60000
 });
 
-connection.on('error', function(err) {
-    connection.destroy();
+pool.on('error', function(err) {
+    pool.destroy();
 })
-module.exports = function(options, fn) {
-      connection.query(options, fn);
+
+module.exports = {
+	executeQuery : function(query, callback) {
+		if(!query) {
+			var error = new Error("Query field can not left blank");
+			return callback(error, null);
+		}
+		pool.getConnection(function(err, connection) {
+		  	connection.query(query, function(err, result) {
+				callback(err, result);
+				connection.release();
+			});
+		});
+	}
 }
