@@ -1,4 +1,4 @@
-//script/index.js
+   	
 var db = require('./db');
 var mailer = require('./mailer');
 
@@ -44,10 +44,43 @@ var forgetEmail = function (req, res) {
     }
   });
 };
+var randomPassword = function () {
+	var length = 8;
+	var chars = "abcdefghijklmnopqrstuvwxyz!@#$ %^&*()-+<>ABCDEFGHIJKLMNOP1234567890";
+	var pass = "";
+	for (var x = 0; x < length; x++) {
+	var i = Math. floor(Math. random() * chars. length);
+	pass += chars. charAt(i);
+	}
+	return pass;
+}
 
 var otpGenerator = function () {
   var otp = Math.floor(Math.random() * 900000) + 100000;
   return otp;
+};
+
+var forgetPassword = function (req, res) {
+  var body = req.body;
+  body.randomPassword = randomPassword ();
+  db.forgetPassword (body, function (err, result) {
+    console.log("check query response",result);
+    if (err) {
+      res.status(400).send("connection failed");
+    } else {
+      //mail Function
+      var data= body;
+      var mailOptions = {
+        to: data.email,
+        subject: "Forget Password",
+        //text: "Node.js New world for me",
+        html: "Hi,<br/>Your LogIn details are<br/>Email-ID: <strong>"+data.email+"</strong><br/>Password: <strong>"+data.randomPassword+"</strong><br/><br/>Click <a href="+'http://127.0.0.1:1823/login'+">here</a> to Login<br/><br/><strong>Thanks Regards<br />Polestar Team</strong>"
+      };
+      mailer.mailSend (mailOptions);
+      //end mail function
+      res.status(200).send('YES');
+    }
+  });
 };
 
 var register = function (req, res) {
@@ -138,10 +171,47 @@ var getQuestion = function (req, res) {
 }
 
 var review = function (req, res) {//console.log(req.body);
-  db.saveReview (req.body, function (err, result) { console.log(result,'result');
+  db.saveReview (req.body, function (err, result) { console.log(result.insertId,'result');
   if (err) {
       res.status(400).send('Connection Failed');
     } else {
+    	qa=req.body.qa;
+    	//var i;
+    	console.log('length:',qa.length);
+    	var dataA = [];
+    	var data = '';
+    	for(var i=0; i < (qa.length); i++) {
+    		var sep = '|';
+			bodydata = qa[i].qId+","+qa[i].ans;
+			
+			if(i == 0) {
+				data = bodydata;
+				console.log("data1:",data);
+			}
+			if(i>=1)
+			{
+				data = data+sep+bodydata;
+				console.log("data2:",data);
+			}
+			if(i == ((qa.length)-1)) {
+				console.log("data is : ",data);
+				dataA = dataA.push(" 1YES|2,NO|3,YES|5,NO");
+				console.log('data3+',dataA);
+			}
+		}
+		
+    	/*for(var i=0; i < (qa.length); i++) {
+    		body = { qId : qa[i].qId, ans : qa[i].ans, reviewId : result.insertId };console.log("i:",i);
+			console.log("body2:",body);
+	      	db.saveReviewQuesAns (body, function (err, result) { console.log(result.insertId,'result2');console.log("i",i);
+	  		if (err && (i == ((qa.length)-1))) {
+	     	 res.status(400).send('Connection Failed');
+	   		 } else if(i == ((qa.length)-1)) {
+	   		 	console.log("data send");
+	      		res.status(200).send('Data successfully inserted');
+	   			}	
+			 });
+        }*/
       res.status(200).send('Data successfully inserted');
     }
   });
@@ -173,7 +243,7 @@ module.exports = {
       emailCheck (req,res);
     } else if (url[2] === 'forgetEmail') {
       console.log("script/index forgetEMail");
-      forgetEmail (req,res);
+      forgetPassword (req,res);
     } else if (url[2] === 'verifyOtp') {
       console.log('script/index verifyOtp');
       verifyOtp (req, res);

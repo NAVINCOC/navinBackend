@@ -18,6 +18,10 @@ module.exports=
     var sql="select * from t_userdetails where emailId='"+data.email+"'";
     dbConnection (sql, cb);
   },
+  forgetPassword: function (data, cb) {
+  	var sql= "update t_userdetails set t_password='"+data.randomPassword+"' where emailId='"+data.email+"'";
+  	dbConnection (sql, cb);
+  },
   verifyOtp: function (data, cb) {
     var sql = 'update t_userdetails set isValidated=1 where emailId="'+data.email+'" && otp="'+data.otp+'"';
     dbConnection (sql, cb);
@@ -33,7 +37,12 @@ module.exports=
   saveReview: function (data, cb) {
   	qa=JSON.stringify(data.qa);
   	console.log("db",qa);
-    var sql="INSERT INTO t_reviewData(name, email, alternateEmail, phone, alternatePhone, primarySkills, secondarySkills, expyear, expMonth, qa) VALUES('"+data.reviewedName+"','"+data.reviewedEmail+"','"+data.reviewedAlternateEmail+"','"+data.reviewedPhone+"','"+data.reviewedAlternateNumber+"','"+data.reviewedPrimarySkills+"','"+data.reviewedSecondarySkills+"','"+data.reviewedYear+"','"+data.reviewedMonth+"','"+qa+"')";
+
+    var sql="INSERT INTO t_reviewData(name, email, alternateEmail, phone, alternatePhone, primarySkills, secondarySkills, expyear, expMonth) VALUES('"+data.reviewedName+"','"+data.reviewedEmail+"','"+data.reviewedAlternateEmail+"','"+data.reviewedPhone+"','"+data.reviewedAlternateNumber+"','"+data.reviewedPrimarySkills+"','"+data.reviewedSecondarySkills+"','"+data.reviewedYear+"','"+data.reviewedMonth+"')";
+    dbConnection (sql, cb);
+  },
+    saveReviewQuesAns: function (data, cb) {
+    var sql="INSERT INTO t_reviewQuesAns(qId, answer, reviewId) VALUES('"+data.qId+"','"+data.ans+"','"+data.reviewId+"')";
     dbConnection (sql, cb);
   },
   getReview: function (cb) {
